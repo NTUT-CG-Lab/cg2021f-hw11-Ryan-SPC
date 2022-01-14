@@ -324,15 +324,39 @@
 
             let elements = document.getElementsByName('settingForm')
 
+           
             // 執行Sizebased transfer function
-            elements[3].addEventListener('click', (evt) => {})
+            elements[3].addEventListener('click', (evt) => {
+                field.process(null,()=>{
+                    modelView.renderVolume(filed, getColormap(), arg)
+                })
+            })
 
             // 預設以ISO渲染
             arg.renderType = 1
 
+            //MIPS or ISO
+            document.querySelectorAll('input[name=rtype]').forEach((option) => {
+                option.addEventListener('click', (evt) => { 
+                    arg.renderType = 0
+                    controlView.updateRGBA()
+                })
+            })
+
+            arg.renderType = 0
+
             // RAW文件讀取
             loadLocalRawFile('./raw/CTchest_64_64_64_uint8.raw', (result) => {
+                let width = 64
+                let height = 64
+                let depth = 64
+                let bit = 8
 
+                let data = Uint8ClampedArray(result)
+
+                field = new ScaleField(width, height, depth, data, arg)
+                
+                controlView.updateVolumeData(field)
             })
 
         }
